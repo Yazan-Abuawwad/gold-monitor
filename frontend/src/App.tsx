@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Header from './components/Header.tsx';
 import NewsPanel from './components/NewsPanel.tsx';
 import MapPanel from './components/MapPanel.tsx';
