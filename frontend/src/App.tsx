@@ -14,10 +14,6 @@ export default function App() {
     setLastFeedUpdate(new Date().toISOString());
   }, []);
 
-  const handleLlmStatus = useCallback((available: boolean) => {
-    setLlmAvailable(available);
-  }, []);
-
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
       <Header lastFeedUpdate={lastFeedUpdate} llmAvailable={llmAvailable} />
@@ -46,7 +42,7 @@ export default function App() {
 
         {/* Right: AI Brief Panel */}
         <div style={{ overflow: 'hidden' }}>
-          <AiBriefPanel headlines={headlines} />
+          <AiBriefPanel headlines={headlines} onLlmStatus={setLlmAvailable} />
         </div>
       </main>
 

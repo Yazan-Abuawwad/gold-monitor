@@ -22,11 +22,12 @@ function severityFromCategory(category: string): string {
 
 interface NewsPanelProps {
   onHeadlinesLoaded?: (headlines: string[]) => void;
+  refreshInterval?: number;
 }
 
-export default function NewsPanel({ onHeadlinesLoaded }: NewsPanelProps) {
+export default function NewsPanel({ onHeadlinesLoaded, refreshInterval = 60000 }: NewsPanelProps) {
   const [category, setCategory] = useState('all');
-  const { data, loading, error, refresh } = useFeeds(category);
+  const { data, loading, error, refresh } = useFeeds(category, refreshInterval);
 
   React.useEffect(() => {
     if (data?.items && onHeadlinesLoaded) {
@@ -34,7 +35,7 @@ export default function NewsPanel({ onHeadlinesLoaded }: NewsPanelProps) {
     }
   }, [data, onHeadlinesLoaded]);
 
-  const groupedBySouce = React.useMemo(() => {
+  const groupedBySource = React.useMemo(() => {
     if (!data?.items) return {};
     return data.items.reduce<Record<string, FeedItem[]>>((acc, item) => {
       const key = item.source.name;
@@ -130,7 +131,7 @@ export default function NewsPanel({ onHeadlinesLoaded }: NewsPanelProps) {
             No feed items yet. Feeds refresh every 15 minutes.
           </div>
         )}
-        {Object.entries(groupedBySouce).map(([sourceName, items]) => (
+        {Object.entries(groupedBySource).map(([sourceName, items]) => (
           <div key={sourceName} style={{ marginBottom: '16px' }}>
             <div
               style={{
@@ -209,7 +210,7 @@ export default function NewsPanel({ onHeadlinesLoaded }: NewsPanelProps) {
             color: 'var(--text-secondary)',
           }}
         >
-          {data.items.length} items · {data.sources.length} sources · refreshes every 15m
+          {data.items.length} items · {data.sources.length} sources · refreshes every {refreshInterval >= 60000 ? `${Math.round(refreshInterval / 60000)}m` : `${refreshInterval / 1000}s`}
         </div>
       )}
     </div>

@@ -5,11 +5,18 @@ const BRIEF_TYPES = ['world', 'security'];
 
 interface AiBriefPanelProps {
   headlines: string[];
+  onLlmStatus?: (available: boolean) => void;
 }
 
-export default function AiBriefPanel({ headlines }: AiBriefPanelProps) {
+export default function AiBriefPanel({ headlines, onLlmStatus }: AiBriefPanelProps) {
   const [briefType, setBriefType] = useState('world');
   const { data, loading, error, generateBrief } = useAiBrief();
+
+  React.useEffect(() => {
+    if (data !== null && onLlmStatus) {
+      onLlmStatus(!data.error);
+    }
+  }, [data, onLlmStatus]);
 
   const handleGenerate = () => {
     void generateBrief(briefType, headlines);
