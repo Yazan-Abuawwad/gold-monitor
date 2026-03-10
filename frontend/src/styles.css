@@ -1,0 +1,92 @@
+/* ===== Gold Monitor — Intelligence Dashboard Theme ===== */
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --accent-gold: #d4af37;
+  --accent-gold-light: #f0d060;
+  --text-primary: #e8e8e8;
+  --text-secondary: #999999;
+  --severity-critical: #ff2222;
+  --severity-high: #ff6600;
+  --severity-medium: #ffaa00;
+  --severity-low: #44bb44;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--accent-gold); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-gold-light); }
+
+/* ── Leaflet dark override ── */
+.leaflet-container { background: #1a1a2e !important; }
+
+/* ── Severity borders ── */
+.severity-critical { border-left: 3px solid var(--severity-critical) !important; }
+.severity-high     { border-left: 3px solid var(--severity-high) !important; }
+.severity-medium   { border-left: 3px solid var(--severity-medium) !important; }
+.severity-low      { border-left: 3px solid var(--severity-low) !important; }
+
+/* ── Gold glow ── */
+.gold-glow { text-shadow: 0 0 10px rgba(212, 175, 55, 0.6); }
+
+/* ── PrimeNG overrides for dark theme ── */
+.p-card {
+  background: var(--bg-card) !important;
+  border: 1px solid #333 !important;
+  border-radius: 4px !important;
+  color: var(--text-primary) !important;
+}
+
+.p-card .p-card-title {
+  color: var(--accent-gold) !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.2em !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.p-button.p-button-gold {
+  background: var(--accent-gold) !important;
+  border-color: var(--accent-gold) !important;
+  color: #000 !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.1em !important;
+}
+
+.p-button.p-button-outline-gold {
+  background: transparent !important;
+  border: 1px solid var(--accent-gold) !important;
+  color: var(--text-secondary) !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.1em !important;
+}
+
+.p-button.p-button-outline-gold.active {
+  background: var(--accent-gold) !important;
+  color: #000 !important;
+}
+
+/* Spin animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}

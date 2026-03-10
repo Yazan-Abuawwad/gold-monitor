@@ -1,0 +1,26 @@
+<div class="app-shell">
+  <app-header [lastFeedUpdate]="lastFeedUpdate" [llmAvailable]="llmAvailable"></app-header>
+
+  <main class="dashboard-grid">
+    <!-- Left: News Panel -->
+    <div class="panel-col">
+      <app-news-panel
+        [refreshIntervalMs]="60000"
+        (headlinesLoaded)="onHeadlinesLoaded($event)">
+      </app-news-panel>
+    </div>
+
+    <!-- Center: Map Panel -->
+    <div class="panel-col">
+      <app-map-panel></app-map-panel>
+    </div>
+
+    <!-- Right: AI Brief Panel -->
+    <div class="panel-col">
+      <app-ai-brief-panel
+        [headlines]="headlines"
+        (llmStatusChange)="onLlmStatus($event)">
+      </app-ai-brief-panel>
+    </div>
+  </main>
+</div>

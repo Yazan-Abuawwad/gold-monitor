@@ -8,3 +8,8 @@ data/
 *.log
 coverage/
 .vite/
+target/
+*.class
+*.jar
+*.war
+out/

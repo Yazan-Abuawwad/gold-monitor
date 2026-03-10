@@ -1,0 +1,25 @@
+<p-toolbar styleClass="gold-toolbar">
+  <ng-template pTemplate="start">
+    <div class="brand">
+      <span class="brand-title gold-glow">&#9672; GOLD MONITOR</span>
+      <span class="brand-sub">INTELLIGENCE DASHBOARD</span>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="end">
+    <div class="header-right">
+      <span class="utc-clock">&#128336; {{ utcTime }}</span>
+      <div class="status-row">
+        <span class="status-item">
+          DB <span style="color: #44bb44">&#9679;</span>
+        </span>
+        <span class="status-item">
+          LLM <span [style.color]="llmDotColor">&#9679;</span>
+        </span>
+        <span class="status-item">
+          FEEDS <span class="feed-time">{{ formatLastUpdate(lastFeedUpdate) }}</span>
+        </span>
+      </div>
+    </div>
+  </ng-template>
+</p-toolbar>

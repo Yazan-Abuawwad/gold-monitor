@@ -1,0 +1,62 @@
+<div class="panel-wrap">
+  <!-- Header -->
+  <div class="panel-header">
+    <h2 class="panel-title">&#9658; AI INTELLIGENCE BRIEF</h2>
+    <div class="header-controls">
+      <button
+        *ngFor="let t of briefTypes"
+        class="type-btn"
+        [class.active]="selectedBriefType === t"
+        (click)="selectBriefType(t)">
+        {{ t | uppercase }}
+      </button>
+      <button
+        class="generate-btn"
+        [disabled]="loading || headlines.length === 0"
+        (click)="generateBrief()">
+        {{ loading ? '&#10227; GENERATING...' : '&#9889; GENERATE BRIEF' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <p-scrollPanel styleClass="brief-scroll">
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <span class="loading-text">Analyzing headlines with {{ selectedBriefType }} context...</span>
+    </div>
+
+    <!-- Fetch error -->
+    <div *ngIf="error && !loading" class="error-box">
+      &#9888; Error: {{ error }}
+    </div>
+
+    <!-- Response with LLM error -->
+    <div *ngIf="!loading && data?.error" class="llm-unavail-box">
+      <div class="llm-unavail-title">&#9888; LLM Unavailable</div>
+      <p>{{ data!.error }}</p>
+      <p class="hint">
+        Set <code>OLLAMA_HOST</code> in your <code>.env</code> to enable AI briefs.
+      </p>
+    </div>
+
+    <!-- Brief content -->
+    <div *ngIf="!loading && data && !data.error" class="brief-content">
+      {{ data.brief }}
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!loading && !data && !error" class="empty-state">
+      <div class="robot-icon">🤖</div>
+      <p>Click <strong>GENERATE BRIEF</strong> to produce an AI-synthesized intelligence brief from today's headlines.</p>
+      <p class="hint">Powered by <span class="gold">Ollama / qwen2:1.5b</span></p>
+    </div>
+  </p-scrollPanel>
+
+  <!-- Footer -->
+  <div *ngIf="data && !data.error" class="panel-footer">
+    <span>Model: {{ data.model }}</span>
+    <span>{{ data.cached ? '&#128230; cached · ' : '' }}{{ formattedGeneratedAt }}</span>
+  </div>
+</div>

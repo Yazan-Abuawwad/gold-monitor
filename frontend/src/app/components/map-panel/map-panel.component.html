@@ -1,0 +1,27 @@
+<div class="panel-wrap">
+  <!-- Header -->
+  <div class="panel-header">
+    <h2 class="panel-title">&#9658; GLOBAL SITUATION MAP</h2>
+    <div class="header-controls">
+      <div class="legend">
+        <span *ngFor="let entry of severityEntries" class="legend-item">
+          <span [style.color]="entry[1]">&#9679;</span>
+          <span class="legend-label">{{ entry[0] }}</span>
+        </span>
+      </div>
+      <button class="refresh-btn" (click)="loadEvents()">&#10227; REFRESH</button>
+    </div>
+  </div>
+
+  <!-- Map container -->
+  <div class="map-area">
+    <div *ngIf="loading" class="overlay">Loading events...</div>
+    <div *ngIf="error" class="overlay error">&#9888; {{ error }}</div>
+    <div #mapContainer class="leaflet-map"></div>
+  </div>
+
+  <!-- Footer -->
+  <div *ngIf="data" class="panel-footer">
+    {{ eventCount }} active events monitored
+  </div>
+</div>

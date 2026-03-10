@@ -1,0 +1,55 @@
+:host ::ng-deep .gold-toolbar {
+  background: var(--bg-secondary) !important;
+  border: none !important;
+  border-bottom: 2px solid var(--accent-gold) !important;
+  border-radius: 0 !important;
+  padding: 8px 24px !important;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-title {
+  color: var(--accent-gold);
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 0.3em;
+  font-family: serif;
+}
+
+.brand-sub {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.utc-clock {
+  color: var(--accent-gold);
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+.status-row {
+  display: flex;
+  gap: 16px;
+  font-size: 0.75rem;
+}
+
+.status-item {
+  color: var(--text-secondary);
+}
+
+.feed-time {
+  color: var(--accent-gold);
+  font-size: 0.7rem;
+}
