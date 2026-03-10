@@ -1,11 +1,12 @@
 import { Router, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import db from '../db/client.js';
 import { getLastFetchTime } from '../services/rssService.js';
-import { rateLimit } from '../middleware/rateLimit.js';
 
 const router = Router();
+const limiter = rateLimit({ windowMs: 60_000, max: 60 });
 
-router.get('/', rateLimit({ windowMs: 60_000, max: 60 }), (req: Request, res: Response) => {
+router.get('/', limiter, (req: Request, res: Response) => {
   const { category, limit = '50', source } = req.query;
 
   let query = `

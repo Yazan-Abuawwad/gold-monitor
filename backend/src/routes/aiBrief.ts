@@ -1,13 +1,14 @@
 import { Router, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import db from '../db/client.js';
 import { generateBrief, checkOllamaHealth, OLLAMA_MODEL } from '../services/ollamaService.js';
-import { rateLimit } from '../middleware/rateLimit.js';
 
 const router = Router();
 
 const CACHE_DURATION_HOURS = 2;
+const limiter = rateLimit({ windowMs: 60_000, max: 10 });
 
-router.post('/', rateLimit({ windowMs: 60_000, max: 10 }), async (req: Request, res: Response) => {
+router.post('/', limiter, async (req: Request, res: Response) => {
   const { briefType = 'world', headlines = [] } = req.body as {
     briefType?: string;
     headlines?: string[];

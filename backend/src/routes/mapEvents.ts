@@ -1,10 +1,11 @@
 import { Router, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import db from '../db/client.js';
-import { rateLimit } from '../middleware/rateLimit.js';
 
 const router = Router();
+const limiter = rateLimit({ windowMs: 60_000, max: 60 });
 
-router.get('/', rateLimit({ windowMs: 60_000, max: 60 }), (req: Request, res: Response) => {
+router.get('/', limiter, (req: Request, res: Response) => {
   const { type, severity, since } = req.query;
 
   let query = 'SELECT id, title, description, lat, lng, event_type, severity, source, occurred_at, created_at FROM map_events WHERE 1=1';
