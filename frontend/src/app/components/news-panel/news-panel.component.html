@@ -1,0 +1,42 @@
+<div class="panel-wrap">
+  <!-- Header -->
+  <div class="panel-header">
+    <h2 class="panel-title">&#9658; INTEL FEED</h2>
+    <div class="header-controls">
+      <button
+        *ngFor="let cat of categories"
+        class="cat-btn"
+        [class.active]="selectedCategory === cat"
+        (click)="selectCategory(cat)">
+        {{ cat | uppercase }}
+      </button>
+      <button class="cat-btn refresh-btn" (click)="loadFeeds()">&#10227;</button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <p-scrollPanel styleClass="feed-scroll">
+    <div *ngIf="loading && !data" class="state-msg">Loading feeds...</div>
+    <div *ngIf="error" class="state-msg error">&#9888; {{ error }}</div>
+    <div *ngIf="!loading && !error && data?.items?.length === 0" class="state-msg">
+      No feed items yet. Feeds refresh every 15 minutes.
+    </div>
+
+    <div *ngFor="let group of groupedBySource()" class="source-group">
+      <div class="source-label">{{ group.source | uppercase }}</div>
+
+      <div *ngFor="let item of group.items" class="feed-item" [ngClass]="severityClass(item.category)">
+        <a [href]="item.url || '#'" target="_blank" rel="noopener noreferrer" class="item-title">
+          {{ item.title }}
+        </a>
+        <div class="item-meta">
+          <span class="category-badge">{{ item.category }}</span>
+          <span class="time-ago">{{ timeAgo(item.publishedAt || item.fetchedAt) }}</span>
+        </div>
+      </div>
+    </div>
+  </p-scrollPanel>
+
+  <!-- Footer -->
+  <div *ngIf="data" class="panel-footer">{{ footerText }}</div>
+</div>

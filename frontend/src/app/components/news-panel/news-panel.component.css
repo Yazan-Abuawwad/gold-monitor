@@ -1,0 +1,142 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.panel-wrap {
+  background: var(--bg-card);
+  border: 1px solid #333;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.panel-title {
+  color: var(--accent-gold);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  margin: 0;
+}
+
+.header-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.cat-btn {
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  font-family: 'Courier New', monospace;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--accent-gold);
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cat-btn.active, .cat-btn:hover {
+  background: var(--accent-gold);
+  color: #000;
+}
+
+.refresh-btn {
+  border-color: #444;
+}
+
+:host ::ng-deep .feed-scroll {
+  flex: 1;
+  height: calc(100% - 100px);
+}
+
+:host ::ng-deep .feed-scroll .p-scrollpanel-content {
+  padding: 8px;
+}
+
+.state-msg {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 24px;
+  font-size: 0.8rem;
+}
+
+.state-msg.error {
+  color: var(--severity-high);
+  padding: 16px;
+}
+
+.source-group {
+  margin-bottom: 16px;
+}
+
+.source-label {
+  color: var(--accent-gold);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.feed-item {
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background: var(--bg-secondary);
+  border-radius: 2px;
+}
+
+.item-title {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  display: block;
+}
+
+.item-title:hover {
+  color: var(--accent-gold);
+}
+
+.item-meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  align-items: center;
+}
+
+.category-badge {
+  font-size: 0.65rem;
+  background: #222;
+  color: var(--accent-gold);
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.time-ago {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.panel-footer {
+  padding: 6px 16px;
+  border-top: 1px solid #333;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}

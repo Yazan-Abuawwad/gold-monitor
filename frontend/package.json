@@ -1,27 +1,46 @@
 {
   "name": "gold-monitor-frontend",
   "version": "1.0.0",
-  "type": "module",
+  "private": true,
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --port 4200",
+    "dev": "ng serve --port 4200",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@angular/animations": "^19.2.19",
+    "@angular/cdk": "^19.2.0",
+    "@angular/common": "^19.2.19",
+    "@angular/compiler": "^19.2.19",
+    "@angular/core": "^19.2.19",
+    "@angular/forms": "^19.2.19",
+    "@angular/platform-browser": "^19.2.19",
+    "@angular/platform-browser-dynamic": "^19.2.19",
+    "@angular/router": "^19.2.19",
+    "@primeng/themes": "^19.1.4",
+    "primeng": "^19.1.4",
+    "primeicons": "^7.0.0",
+    "primeflex": "^3.3.1",
     "leaflet": "^1.9.4",
-    "react-leaflet": "^4.2.1",
-    "@types/leaflet": "^1.9.8"
+    "@types/leaflet": "^1.9.8",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.6.0",
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "tailwindcss": "^3.4.1",
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.35",
-    "typescript": "^5.3.3",
-    "vite": "^6.4.1",
-    "@types/react": "^18.2.57",
-    "@types/react-dom": "^18.2.19"
-  },
-  "scripts": {
-    "dev": "vite --port 5173",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "@angular-devkit/build-angular": "^19.2.22",
+    "@angular/cli": "^19.2.22",
+    "@angular/compiler-cli": "^19.2.19",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.1.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.7.0"
   }
 }
