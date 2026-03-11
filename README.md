@@ -11,13 +11,15 @@ A World Monitor–style situational-awareness dashboard combining real-time news
 **Frontend:** https://gold-monitor.vercel.app ← deploy and update this  
 **LLM API:** http://YOUR_VPS_IP:11434 ← set `OLLAMA_HOST` in `.env`
 
+![Gold Monitor — Angular + PrimeNG](https://github.com/user-attachments/assets/141a9f34-8e8c-4ed9-86d3-37886f6b1e54)
+
 ---
 
 ## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│               FRONTEND (Angular 17 + PrimeNG)                   │
+│               FRONTEND (Angular 19 + PrimeNG)                   │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
 │  │  News Panel  │  │  Map Panel   │  │  AI Brief Panel      │  │
 │  │  (RSS feeds) │  │ (Leaflet.js) │  │ (Ollama/Qwen LLM)   │  │
@@ -73,6 +75,7 @@ mvn spring-boot:run
 # SQLite DB auto-created at ./data/gold-monitor.db
 # Map events seeded automatically on first start
 # RSS feeds fetched on startup (then every 15 minutes)
+# Rate limiting: 60 req/min for feeds/map, 10 req/min for AI brief (per IP)
 ```
 
 ### 4. Start the frontend
@@ -106,7 +109,7 @@ gold-monitor/
 │           ├── application.properties
 │           ├── schema.sql      # SQLite table definitions
 │           └── data.sql        # Initial RSS source data
-├── frontend/                 # Angular 17 + PrimeNG
+├── frontend/                 # Angular 19 + PrimeNG 19
 │   ├── angular.json
 │   ├── package.json
 │   ├── proxy.conf.json        # Dev-server proxy → backend :3001
@@ -121,6 +124,20 @@ gold-monitor/
     ├── LOCAL_SETUP.md
     ├── DEPLOYMENT.md
     └── OLLAMA_SETUP.md
+```
+
+---
+
+## ⚙️ Backend Configuration
+
+All backend settings are tunable via environment variables:
+
+```properties
+server.port=${PORT:3001}
+spring.datasource.url=jdbc:sqlite:${DATABASE_URL:./data/gold-monitor.db}
+allowed.origins=${ALLOWED_ORIGINS:http://localhost:4200}
+ollama.host=${OLLAMA_HOST:http://localhost:11434}
+ollama.model=${OLLAMA_MODEL:qwen2:1.5b}
 ```
 
 ---
@@ -159,10 +176,26 @@ Schema is auto-applied on startup via `src/main/resources/schema.sql`.
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Angular 17 + PrimeNG + TypeScript |
+| Frontend | Angular 19.2.19 + PrimeNG 19.1.4 + TypeScript |
 | Map | Leaflet.js (CartoDB Dark Matter tiles) |
-| Backend | Spring Boot 3 + Java 17 + Maven |
+| Backend | Spring Boot 3.2 + Java 17 + Maven |
 | Database | SQLite (Spring JDBC) |
 | RSS Parsing | Rome 2.1.0 |
 | LLM | Ollama with qwen2:1.5b |
+| Rate Limiting | Bucket4j per-IP (60 req/min feeds/map, 10 req/min AI brief) |
 | News | RSS feeds (BBC, Reuters, Al Jazeera, AP, Defense News, Guardian) |
+
+---
+
+## 🔒 Security
+
+Angular was upgraded to **19.2.19** to fix the following CVEs (no patch available in ≤ 18.x):
+
+| CVE | Package | Fixed in |
+|-----|---------|----------|
+| XSRF Token Leakage via protocol-relative URLs | `@angular/common` | 19.2.16 |
+| XSS via unsanitized SVG script attributes | `@angular/compiler`, `@angular/core` | 19.2.18 |
+| Stored XSS via SVG animation/URL/MathML attributes | `@angular/compiler` | 19.2.17 |
+| i18n XSS | `@angular/core` | 19.2.19 |
+
+> **Note**: six remaining high-severity advisories are in the dev build toolchain only (`@angular-devkit/build-angular`, `tar`, `serialize-javascript`, etc.). Their fix requires Angular CLI 21.x, which is incompatible with the 19.x runtime. They do not affect the production bundle.
