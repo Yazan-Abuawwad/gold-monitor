@@ -11,7 +11,8 @@ A World Monitor–style situational-awareness dashboard combining real-time news
 **Frontend:** https://gold-monitor.vercel.app ← deploy and update this  
 **LLM API:** http://YOUR_VPS_IP:11434 ← set `OLLAMA_HOST` in `.env`
 
-![Gold Monitor — Angular + PrimeNG](https://github.com/user-attachments/assets/141a9f34-8e8c-4ed9-86d3-37886f6b1e54)
+ 
+<img width="1909" height="993" alt="image" src="https://github.com/user-attachments/assets/010c8b3b-5311-499d-a6c3-9506384aa3ed" />
 
 ---
 
