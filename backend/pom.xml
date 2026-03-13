@@ -35,11 +35,11 @@
       <artifactId>spring-boot-starter-jdbc</artifactId>
     </dependency>
 
-    <!-- SQLite JDBC driver -->
+    <!-- PostgreSQL JDBC driver -->
     <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>sqlite-jdbc</artifactId>
-      <version>3.45.1.0</version>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- Rome RSS/Atom parser -->
