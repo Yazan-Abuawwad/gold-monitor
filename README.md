@@ -8,8 +8,7 @@ A World Monitor–style situational-awareness dashboard combining real-time news
 
 ## 🖥️ Live App
 
-**Frontend:** https://gold-monitor.vercel.app ← deploy and update this  
-**LLM API:** http://YOUR_VPS_IP:11434 ← set `OLLAMA_HOST` in `.env`
+ 
 
  
  <img width="1917" height="986" alt="image" src="https://github.com/user-attachments/assets/fb95b106-dece-479f-b20d-2395cead2320" />
