@@ -12,7 +12,8 @@ A World Monitor–style situational-awareness dashboard combining real-time news
 **LLM API:** http://YOUR_VPS_IP:11434 ← set `OLLAMA_HOST` in `.env`
 
  
-<img width="1909" height="993" alt="image" src="https://github.com/user-attachments/assets/010c8b3b-5311-499d-a6c3-9506384aa3ed" />
+ <img width="1917" height="986" alt="image" src="https://github.com/user-attachments/assets/fb95b106-dece-479f-b20d-2395cead2320" />
+
 
 ---
 
