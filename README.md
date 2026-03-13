@@ -33,15 +33,15 @@ A World Monitor–style situational-awareness dashboard combining real-time news
 │  GET /api/feeds   GET /api/map-events   POST /api/ai-brief       │
 │           │               │                    │                  │
 │  ┌────────▼───────────────▼────────────────────▼──────────────┐ │
-│  │              DATABASE (SQLite via JDBC)                     │ │
+│  │              DATABASE (PostgreSQL via JDBC)                 │ │
 │  │  sources | feed_items | map_events | ai_briefs              │ │
 │  └────────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────┬──────────────────────────┘
                                         │
                              ┌──────────▼──────────┐
-                             │  Ollama / Qwen LLM  │
+                             │  Ollama LLM         │
                              │  (VPS or localhost)  │
-                             │  qwen2:1.5b model   │
+                             │  llama3.2 (default) │
                              └─────────────────────┘
 ```
 
@@ -65,16 +65,15 @@ cd gold-monitor
 ### 2. Configure environment
 ```bash
 cp .env.example .env
-# Edit .env — set OLLAMA_HOST if you have Ollama running
+# Edit .env — set DB_USERNAME, DB_PASSWORD, DATABASE_URL (PostgreSQL), and OLLAMA_HOST
 ```
 
 ### 3. Start the backend
 ```bash
 cd backend
-# Optional: export environment variables from .env
 mvn spring-boot:run
 # API running at http://localhost:3001
-# SQLite DB auto-created at ./data/gold-monitor.db
+# PostgreSQL DB must be running and accessible via DATABASE_URL
 # Map events seeded automatically on first start
 # RSS feeds fetched on startup (then every 15 minutes)
 # Rate limiting: 60 req/min for feeds/map, 10 req/min for AI brief (per IP)
@@ -84,7 +83,7 @@ mvn spring-boot:run
 ```bash
 cd frontend
 npm install
-npm run dev
+npm start
 # Dashboard at http://localhost:4200
 ```
 
@@ -96,7 +95,7 @@ npm run dev
 gold-monitor/
 ├── README.md
 ├── .env.example
-├── package.json              # Root scripts
+├── package.json              # Root convenience scripts (dev:backend, dev:frontend, build)
 ├── backend/                  # Spring Boot 3 (Java 17 + Maven)
 │   ├── pom.xml
 │   └── src/main/
@@ -109,8 +108,8 @@ gold-monitor/
 │       │   └── dto/            # Request/response DTOs
 │       └── resources/
 │           ├── application.properties
-│           ├── schema.sql      # SQLite table definitions
-│           └── data.sql        # Initial RSS source data
+│           ├── schema.sql      # PostgreSQL table definitions
+│           └── data.sql        # RSS source seeds
 ├── frontend/                 # Angular 19 + PrimeNG 19
 │   ├── angular.json
 │   ├── package.json
@@ -119,7 +118,8 @@ gold-monitor/
 │       ├── app.component.*    # Root layout
 │       ├── components/        # header, news-panel, map-panel, ai-brief-panel
 │       ├── services/          # FeedService, MapEventsService, AiBriefService
-│       └── models/            # TypeScript interfaces
+│       ├── models/            # TypeScript interfaces
+│       └── environments/      # Angular environment configs
 ├── db/
 │   └── migrations/
 └── docs/
@@ -136,33 +136,36 @@ All backend settings are tunable via environment variables:
 
 ```properties
 server.port=${PORT:3001}
-spring.datasource.url=jdbc:sqlite:${DATABASE_URL:./data/gold-monitor.db}
-allowed.origins=${ALLOWED_ORIGINS:http://localhost:4200}
+spring.datasource.url=${DATABASE_URL:jdbc:postgresql://localhost:5432/gold_monitor}
+spring.datasource.username=${DB_USERNAME:postgres}
+spring.datasource.password=${DB_PASSWORD:root}
+allowed.origins=${ALLOWED_ORIGINS:http://localhost:4200,http://localhost:5173,http://localhost:3000}
 ollama.host=${OLLAMA_HOST:http://localhost:11434}
-ollama.model=${OLLAMA_MODEL:qwen2:1.5b}
+ollama.model=${OLLAMA_MODEL:llama3.2}
 ```
 
 ---
 
 ## 🤖 LLM / Ollama
 
-The AI Brief panel uses [Ollama](https://ollama.ai) with the `qwen2:1.5b` model.
+The AI Brief panel uses [Ollama](https://ollama.ai). The default model is `llama3.2` (auto-detected at startup; falls back to the first installed model if not found).
 
-- **Local**: `ollama pull qwen2:1.5b && ollama serve`
+- **Local**: `ollama pull llama3.2 && ollama serve`
 - **VPS**: See [docs/OLLAMA_SETUP.md](docs/OLLAMA_SETUP.md)
 - **Fallback**: If Ollama is unavailable, the panel shows a graceful error message
 
-Set `OLLAMA_HOST=http://YOUR_VPS_IP:11434` in `.env` (then pass as env var to Spring Boot).
+Set `OLLAMA_HOST=http://YOUR_VPS_IP:11434` in `.env` and pass it as an environment variable to Spring Boot.
 
 ---
 
 ## 🗄️ Database
 
-SQLite via Spring JDBC — zero infrastructure, file-based.
+PostgreSQL via Spring JDBC.
 
 Tables: `sources`, `feed_items`, `map_events`, `ai_briefs`
 
 Schema is auto-applied on startup via `src/main/resources/schema.sql`.
+RSS feed sources are seeded via `src/main/resources/data.sql`.
 
 ---
 
@@ -203,11 +206,11 @@ Schema is auto-applied on startup via `src/main/resources/schema.sql`.
 | Map | Leaflet.js (CartoDB, OSM, Esri Satellite, OpenTopoMap tiles) |
 | Gold Chart | Pure SVG sparkline — no extra library |
 | Backend | Spring Boot 3.2 + Java 17 + Maven |
-| Database | SQLite (Spring JDBC) |
+| Database | PostgreSQL (Spring JDBC) |
 | RSS Parsing | Rome 2.1.0 |
-| LLM | Ollama with qwen2:1.5b |
+| LLM | Ollama (default model: `llama3.2`, configurable via `OLLAMA_MODEL`) |
 | Rate Limiting | Bucket4j per-IP (60 req/min feeds/map, 10 req/min AI brief) |
-| News | RSS feeds (BBC, Reuters, Al Jazeera, AP, Defense News, Guardian) |
+| News | RSS feeds (BBC, Al Jazeera, The Guardian, NPR, ABC News Intl, Defense News, Kitco, MarketWatch, Mining.com, and more) |
 
 ---
 
