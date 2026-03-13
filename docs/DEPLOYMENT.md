@@ -4,7 +4,7 @@ This guide covers deploying Gold Monitor to production.
 
 **Recommended stack:**
 - **Frontend**: Vercel (free tier)
-- **Backend + DB**: Railway (free tier or $5/mo Hobby)
+- **Backend + DB**: Railway (free tier or $5/mo Hobby) with a PostgreSQL add-on
 - **LLM**: VPS with Ollama (see [OLLAMA_SETUP.md](OLLAMA_SETUP.md))
 
 ---
@@ -16,19 +16,24 @@ This guide covers deploying Gold Monitor to production.
 1. Create a new [Railway](https://railway.app) project
 2. Connect your GitHub repository
 3. Set **Root Directory** to `backend`
-4. Railway auto-detects Node.js and runs `npm install && npm run build && npm start`
+4. Railway auto-detects Maven and builds with `mvn package -DskipTests`; set the **Start Command** to:
+   ```
+   java -jar target/gold-monitor-backend-1.0.0.jar
+   ```
+5. Add a **PostgreSQL** plugin — Railway injects `DATABASE_URL` automatically (update `application.properties` or override with env vars below)
 
 **Environment Variables** (set in Railway dashboard):
 ```
-DATABASE_URL=/app/data/gold-monitor.db
+DATABASE_URL=jdbc:postgresql://<host>:<port>/<db>
+DB_USERNAME=<railway_pg_user>
+DB_PASSWORD=<railway_pg_password>
 PORT=3001
-NODE_ENV=production
 ALLOWED_ORIGINS=https://gold-monitor.vercel.app
 OLLAMA_HOST=http://YOUR_VPS_IP:11434
-OLLAMA_MODEL=qwen2:1.5b
+OLLAMA_MODEL=llama3.2
 ```
 
-5. Note your Railway URL: `https://gold-monitor-api.up.railway.app`
+6. Note your Railway URL: `https://gold-monitor-api.up.railway.app`
 
 ### 2. Deploy Frontend to Vercel
 
@@ -36,11 +41,12 @@ OLLAMA_MODEL=qwen2:1.5b
 2. Import your GitHub repository
 3. Set **Root Directory** to `frontend`
 4. Set **Build Command**: `npm run build`
-5. Set **Output Directory**: `dist`
+5. Set **Output Directory**: `dist/gold-monitor-frontend/browser`
 
 **Environment Variables** (set in Vercel dashboard):
 ```
-VITE_API_BASE_URL=https://gold-monitor-api.up.railway.app
+# None required — the Angular proxy is replaced by the production API URL
+# configured in frontend/src/environments/environment.prod.ts
 ```
 
 6. Deploy → your app is live at `https://gold-monitor.vercel.app`
@@ -52,23 +58,14 @@ VITE_API_BASE_URL=https://gold-monitor-api.up.railway.app
 Deploy the entire monorepo as a single Railway service:
 
 1. Create a new Railway project
-2. Connect your GitHub repository  
-3. Set start command: `npm run dev:backend`
-4. Set environment variables as above
-5. For frontend, run `npm run build --workspace=frontend` and serve the `frontend/dist` folder via Express static middleware
-
-Add to `backend/src/index.ts`:
-```typescript
-import path from 'path';
-// Serve static frontend files in production
-if (process.env.NODE_ENV === 'production') {
-  const frontendDist = path.resolve('../frontend/dist');
-  app.use(express.static(frontendDist));
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(frontendDist, 'index.html'));
-  });
-}
-```
+2. Connect your GitHub repository
+3. Add a **PostgreSQL** plugin
+4. Set **Root Directory** to `backend`
+5. Set **Start Command**: `java -jar target/gold-monitor-backend-1.0.0.jar`
+6. Set environment variables as in Option A
+7. Build the Angular frontend locally first (`npm run build:frontend`), then serve the
+   `frontend/dist/gold-monitor-frontend/browser` folder via a CDN or include it in the Spring Boot
+   static resources directory (`backend/src/main/resources/static/`)
 
 ---
 
@@ -85,7 +82,6 @@ app = "gold-monitor"
 
 [env]
   PORT = "8080"
-  NODE_ENV = "production"
 
 [[services]]
   http_checks = []
@@ -121,7 +117,7 @@ After deployment, update these in `README.md`:
 
 - [ ] `https://your-app.vercel.app` loads the dashboard
 - [ ] News feeds panel shows headlines (may take a few minutes on first boot)
-- [ ] Map panel shows 16 global events
+- [ ] Map panel shows global events
 - [ ] AI Brief panel shows "Generate Brief" button
 - [ ] If Ollama is configured: AI brief generates successfully
 - [ ] `ALLOWED_ORIGINS` includes your Vercel domain

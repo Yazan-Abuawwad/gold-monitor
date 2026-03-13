@@ -8,9 +8,12 @@ This guide walks you through running Gold Monitor locally for development.
 
 | Tool | Version | Notes |
 |------|---------|-------|
-| Node.js | 18+ | [nodejs.org](https://nodejs.org) |
+| Java | 17+ | [adoptium.net](https://adoptium.net) |
+| Maven | 3.8+ | [maven.apache.org](https://maven.apache.org) |
+| Node.js | 18+ | [nodejs.org](https://nodejs.org) — for the Angular frontend |
 | npm | 9+ | Included with Node.js |
-| Ollama | Latest | Optional — for AI briefs |
+| PostgreSQL | 14+ | [postgresql.org](https://www.postgresql.org) |
+| Ollama | Latest | Optional — for AI briefs; see [OLLAMA_SETUP.md](OLLAMA_SETUP.md) |
 
 ---
 
@@ -23,76 +26,86 @@ git clone https://github.com/Yazan-Abuawwad/gold-monitor.git
 cd gold-monitor
 ```
 
-### 2. Install all dependencies
+### 2. Create the PostgreSQL database
+
+```sql
+CREATE DATABASE gold_monitor;
+```
+
+### 3. Configure the backend
+
+Open `backend/src/main/resources/application.properties` and adjust if needed:
+
+```properties
+# Database
+spring.datasource.url=jdbc:postgresql://localhost:5432/gold_monitor
+spring.datasource.username=postgres
+spring.datasource.password=root
+
+# Ollama (optional — enables AI briefs)
+ollama.host=http://localhost:11434
+ollama.model=llama3.2
+
+# CORS — add any extra origins here
+allowed.origins=http://localhost:4200
+```
+
+All values support environment-variable overrides:
+
+| Env var | Default |
+|---------|---------|
+| `DATABASE_URL` | `jdbc:postgresql://localhost:5432/gold_monitor` |
+| `DB_USERNAME` | `postgres` |
+| `DB_PASSWORD` | `root` |
+| `OLLAMA_HOST` | `http://localhost:11434` |
+| `OLLAMA_MODEL` | `llama3.2` |
+| `ALLOWED_ORIGINS` | `http://localhost:4200,...` |
+| `PORT` | `3001` |
+
+### 4. Install frontend dependencies
 
 ```bash
-npm install
+cd frontend && npm install && cd ..
 ```
-
-This installs both backend and frontend dependencies via npm workspaces.
-
-### 3. Configure environment variables
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and configure:
-
-```env
-# Required — Database path (auto-created)
-DATABASE_URL=./data/gold-monitor.db
-
-# Required — API port
-PORT=3001
-
-# Required — Allowed frontend origins
-ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
-
-# Optional — Ollama LLM endpoint
-# Set this to enable AI briefs
-OLLAMA_HOST=http://localhost:11434
-OLLAMA_MODEL=qwen2:1.5b
-
-# Required — Frontend API URL (points to backend)
-VITE_API_BASE_URL=http://localhost:3001
-```
-
-### 4. Run database migrations
-
-```bash
-npm run db:migrate --workspace=backend
-```
-
-This creates `data/gold-monitor.db` with all tables and seeds the default RSS sources.
 
 ### 5. Start the backend API
 
 ```bash
 npm run dev:backend
+# or: cd backend && mvn spring-boot:run
 ```
 
-Output:
+On first start Spring Boot runs `schema.sql` then `data.sql`, creating all tables and seeding the RSS sources.
+
+Expected output:
 ```
-🚀 Starting Gold Monitor API...
-✅ Database tables created/verified
-✅ Seeded 16 map events
-📰 Fetching initial RSS feeds...
-✅ Gold Monitor API running on http://localhost:3001
-   Endpoints: GET /api/feeds, GET /api/map-events, POST /api/ai-brief
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+...
+Started GoldMonitorApplication in X.XXXs
 ```
+
+The API is now available at **http://localhost:3001**
 
 ### 6. Start the frontend (new terminal)
 
 ```bash
 npm run dev:frontend
+# or: cd frontend && npm run dev
 ```
 
-Open: **http://localhost:5173**
+Open: **http://localhost:4200**
 
 ---
 
-## Testing the API
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Health check |
+| `GET` | `/api/feeds` | News headlines (params: `category`, `source`, `limit`) |
+| `GET` | `/api/map-events` | Geo events (params: `type`, `severity`, `since`) |
+| `POST` | `/api/ai-brief` | Generate AI brief (body: `{ briefType, headlines }`) |
 
 ### Check health
 ```bash
@@ -120,19 +133,17 @@ curl -X POST http://localhost:3001/api/ai-brief \
 
 ## Troubleshooting
 
-### `better-sqlite3` build error
-```bash
-npm rebuild better-sqlite3 --workspace=backend
-```
+### PostgreSQL connection refused
+Ensure PostgreSQL is running and the credentials in `application.properties` (or environment variables) are correct.
 
 ### RSS feeds not loading
-RSS feeds are fetched every 15 minutes. If initial fetch fails (network issues), wait or check your internet connection. The API will still respond with an empty list.
+RSS feeds are fetched on start-up and then every 15 minutes via a scheduled task. If the initial fetch fails (network issues), wait and check your internet connection. The API responds with an empty list in the meantime.
 
 ### Map not rendering
-The map uses CartoDB tiles (CDN). Ensure you have internet connectivity. The Leaflet CSS is loaded from the npm package.
+The map uses CartoDB tiles (CDN). Ensure you have internet connectivity. Leaflet is included as an npm package in the Angular frontend.
 
 ### Ollama not available
 The AI Brief panel will show a graceful error. To enable:
-1. Install Ollama: see [OLLAMA_SETUP.md](OLLAMA_SETUP.md)
-2. Set `OLLAMA_HOST` in `.env`
+1. Install Ollama — see [OLLAMA_SETUP.md](OLLAMA_SETUP.md)
+2. Set `OLLAMA_HOST` and `OLLAMA_MODEL` in `application.properties` or as env vars
 3. Restart the backend

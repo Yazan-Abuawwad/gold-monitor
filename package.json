@@ -2,11 +2,16 @@
   "name": "gold-monitor",
   "version": "1.0.0",
   "private": true,
+  "description": "Gold Monitor Intelligence Dashboard — Spring Boot 3 + Angular 19",
   "scripts": {
+    "install:frontend": "cd frontend && npm install",
     "dev:backend": "cd backend && mvn spring-boot:run",
     "dev:frontend": "cd frontend && npm run dev",
     "build:backend": "cd backend && mvn package -DskipTests",
     "build:frontend": "cd frontend && npm run build",
-    "build": "npm run build:backend && npm run build:frontend"
+    "build": "npm run build:backend && npm run build:frontend",
+    "test:backend": "cd backend && mvn test",
+    "test:frontend": "cd frontend && npm run test"
   }
 }
+
