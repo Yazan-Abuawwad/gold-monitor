@@ -8,7 +8,7 @@ import { AiBriefService } from '../../services/ai-brief.service';
 import { AiBriefResponse } from '../../models';
 import { Subscription } from 'rxjs';
 
-const BRIEF_TYPES = ['world', 'security'];
+const BRIEF_TYPES = ['gold', 'world', 'security'];
 
 @Component({
   selector: 'app-ai-brief-panel',
@@ -22,7 +22,7 @@ export class AiBriefPanelComponent implements OnDestroy {
   @Output() llmStatusChange = new EventEmitter<boolean>();
 
   briefTypes = BRIEF_TYPES;
-  selectedBriefType = 'world';
+  selectedBriefType = 'gold';
   data: AiBriefResponse | null = null;
   loading = false;
   error: string | null = null;

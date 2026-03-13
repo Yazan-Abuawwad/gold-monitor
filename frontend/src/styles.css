@@ -20,6 +20,7 @@
 
 html, body {
   height: 100%;
+  overflow: hidden;
   margin: 0;
   padding: 0;
   background-color: var(--bg-primary);
@@ -35,6 +36,17 @@ html, body {
 
 /* ── Leaflet dark override ── */
 .leaflet-container { background: #1a1a2e !important; }
+
+/* ── Gold mine marker (Leaflet DivIcon — lives outside component shadow) ── */
+.mine-marker {
+  color: #ffd700;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  text-shadow: 0 0 6px #ffd700, 0 0 14px #b8860b;
+  cursor: pointer;
+  user-select: none;
+}
 
 /* ── Severity borders ── */
 .severity-critical { border-left: 3px solid var(--severity-critical) !important; }

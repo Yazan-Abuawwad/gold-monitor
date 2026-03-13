@@ -8,20 +8,124 @@
           <span [style.color]="entry[1]">&#9679;</span>
           <span class="legend-label">{{ entry[0] }}</span>
         </span>
+        <span class="legend-item legend-mine">
+          <span class="mine-legend-icon">&#9670;</span>
+          <span class="legend-label">gold mine</span>
+        </span>
+      </div>
+      <button class="toggle-mines-btn" [class.active]="minesVisible" (click)="toggleMines()">
+        &#9670; MINES
+      </button>
+      <div class="tile-switcher">
+        <button
+          *ngFor="let key of tileKeys"
+          class="tile-btn"
+          [class.active]="selectedTile === key"
+          (click)="switchTile(key)">
+          {{ key === 'SATELLITE' ? 'SAT' : key }}
+        </button>
       </div>
       <button class="refresh-btn" (click)="loadEvents()">&#10227; REFRESH</button>
     </div>
   </div>
 
-  <!-- Map container -->
+  <!-- Map + Chart row -->
   <div class="map-area">
     <div *ngIf="loading" class="overlay">Loading events...</div>
     <div *ngIf="error" class="overlay error">&#9888; {{ error }}</div>
     <div #mapContainer class="leaflet-map"></div>
+
+    <!-- Gold Price Chart -->
+    <div class="gold-chart-panel">
+      <!-- Symbol + Range -->
+      <div class="chart-header">
+        <span class="chart-symbol">XAU / {{ activeCurrency.code }}</span>
+        <div class="range-switcher">
+          <button
+            *ngFor="let r of ranges"
+            class="range-btn"
+            [class.active]="selectedRange === r"
+            (click)="selectRange(r)">
+            {{ r }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="chart-price">
+        <span class="price-value">{{ activeCurrency.symbol }}{{ goldCurrent | number:'1.0-0' }}</span>
+        <span class="price-change" [class.up]="goldIsPositive" [class.down]="!goldIsPositive">
+          {{ formattedPriceChange }}
+          &nbsp;({{ goldIsPositive ? '+' : '' }}{{ goldChangePct }}%)
+        </span>
+      </div>
+
+      <!-- Sparkline -->
+      <svg class="gold-svg" viewBox="0 0 220 80" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#ffd700" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#ffd700" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+        <line x1="4" y1="20" x2="216" y2="20" stroke="#2a2a2a" stroke-width="1"/>
+        <line x1="4" y1="40" x2="216" y2="40" stroke="#2a2a2a" stroke-width="1"/>
+        <line x1="4" y1="60" x2="216" y2="60" stroke="#2a2a2a" stroke-width="1"/>
+        <path [attr.d]="goldAreaPath" fill="url(#goldGrad)"/>
+        <path [attr.d]="goldLinePath" fill="none" stroke="#ffd700" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle [attr.cx]="goldLastDot.x" [attr.cy]="goldLastDot.y" r="5" fill="none" stroke="#ffd700" stroke-opacity="0.3" stroke-width="1"/>
+        <circle [attr.cx]="goldLastDot.x" [attr.cy]="goldLastDot.y" r="3" fill="#ffd700"/>
+      </svg>
+
+      <!-- Stats -->
+      <div class="chart-stats">
+        <div class="stat">
+          <span class="stat-lbl">HIGH</span>
+          <span class="stat-val">{{ activeCurrency.symbol }}{{ goldHigh | number:'1.0-0' }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-lbl">LOW</span>
+          <span class="stat-val">{{ activeCurrency.symbol }}{{ goldLow | number:'1.0-0' }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-lbl">OPEN</span>
+          <span class="stat-val">{{ activeCurrency.symbol }}{{ goldOpen | number:'1.0-0' }}</span>
+        </div>
+      </div>
+
+      <div class="chart-dates">
+        <span>{{ chartDateRange.start }}</span>
+        <span>{{ chartDateRange.end }}</span>
+      </div>
+
+      <!-- XAU Currency Pairs -->
+      <div class="pairs-section">
+        <div class="pairs-title">&#9670; XAU PAIRS &nbsp;&mdash;&nbsp; 30D</div>
+        <div class="pairs-list">
+          <div
+            *ngFor="let c of goldCurrencies"
+            class="mini-ticker"
+            [class.active]="selectedCurrency === c.code"
+            (click)="selectCurrency(c.code)"
+            [title]="c.name">
+            <span class="mt-code">{{ c.code }}</span>
+            <span class="mt-price">{{ formatMiniPrice(c) }}</span>
+            <span class="mt-pct" [class.up]="isCurrencyPositive(c)" [class.down]="!isCurrencyPositive(c)">
+              +{{ c.change30d }}%
+            </span>
+            <svg class="mt-spark" viewBox="0 0 44 16" preserveAspectRatio="none">
+              <path [attr.d]="getMiniLinePath(c)" fill="none"
+                    stroke="#ffd700" stroke-width="1.3"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Footer -->
   <div *ngIf="data" class="panel-footer">
-    {{ eventCount }} active events monitored
+    {{ eventCount }} active events &nbsp;·&nbsp; {{ minesVisible ? 20 : 0 }} gold mines shown
   </div>
 </div>

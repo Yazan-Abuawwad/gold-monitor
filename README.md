@@ -174,12 +174,34 @@ Schema is auto-applied on startup via `src/main/resources/schema.sql`.
 
 ---
 
+## 🆕 What's New (March 2026)
+
+### 🗺️ Global Situation Map
+- **Gold Mining Layer** — 20 major world gold mines plotted as glowing ◆ markers (Barrick, Newmont, Polyus, AngloGold Ashanti, Gold Fields, and more). Click any marker for mine name, country, operator, and annual output. Toggle the layer on/off via the **◆ MINES** button.
+- **5 Map Tile Styles** — Switch between `DARK` (CartoDB), `LIGHT` (CartoDB Positron), `OSM` (OpenStreetMap), `SAT` (Esri Satellite), and `TOPO` (OpenTopoMap) directly from the panel header.
+- **XAU/USD Gold Price Chart** — Inline SVG sparkline chart beside the map showing the SPOT gold price with gradient fill, current-price dot, and HIGH / LOW / OPEN stats.
+- **5 Chart Ranges** — `7D · 30D · 90D · 1Y · 5Y` selector that instantly re-renders the chart and updates all stats and date labels.
+- **10 XAU Currency Pairs** — Scrollable ticker list showing gold priced in USD, EUR, GBP, JPY, CNY, INR, AUD, CHF, CAD, and TRY. Each row shows the price, 30D % change, and a mini sparkline. Click any row to switch the main chart to that currency.
+
+### 🤖 AI Intelligence Brief
+- **Gold Brief type added** as the default selection (`GOLD · WORLD · SECURITY`).
+- Dedicated **gold-focused LLM prompt** covering: gold price & safe-haven sentiment, geopolitical risks to mining regions, and supply/production outlook.
+
+### 📰 Intel Feed
+- News channels now display a **maximum of 4 items per source** to prevent overflow and keep the panel compact.
+
+### 🖥️ Layout
+- Dashboard is now fully **no-scroll**: all panels fit exactly in the viewport (`height: 100vh; overflow: hidden`) regardless of content height.
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | Frontend | Angular 19.2.19 + PrimeNG 19.1.4 + TypeScript |
-| Map | Leaflet.js (CartoDB Dark Matter tiles) |
+| Map | Leaflet.js (CartoDB, OSM, Esri Satellite, OpenTopoMap tiles) |
+| Gold Chart | Pure SVG sparkline — no extra library |
 | Backend | Spring Boot 3.2 + Java 17 + Maven |
 | Database | SQLite (Spring JDBC) |
 | RSS Parsing | Rome 2.1.0 |

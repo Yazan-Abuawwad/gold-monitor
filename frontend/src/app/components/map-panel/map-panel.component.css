@@ -69,16 +69,111 @@
   color: #000;
 }
 
+.toggle-mines-btn {
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  font-family: 'Courier New', monospace;
+  background: transparent;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+}
+
+.toggle-mines-btn.active {
+  opacity: 1;
+  background: #ffd70022;
+}
+
+.toggle-mines-btn:hover {
+  background: #ffd700;
+  color: #000;
+  opacity: 1;
+}
+
+.legend-mine .mine-legend-icon {
+  color: #ffd700;
+  font-size: 0.8rem;
+}
+
+/* ── Tile switcher ── */
+.tile-switcher {
+  display: flex;
+  gap: 3px;
+}
+
+.tile-btn {
+  padding: 2px 7px;
+  font-size: 0.62rem;
+  font-family: 'Courier New', monospace;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid #444;
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.tile-btn.active {
+  background: #ffffff18;
+  color: #e8e8e8;
+  border-color: #888;
+}
+
+.tile-btn:hover {
+  background: #ffffff22;
+  color: #e8e8e8;
+  border-color: #aaa;
+}
+
+/* ── Range switcher (inside chart) ── */
+.range-switcher {
+  display: flex;
+  gap: 2px;
+}
+
+.range-btn {
+  padding: 1px 5px;
+  font-size: 0.58rem;
+  font-family: 'Courier New', monospace;
+  background: transparent;
+  color: #555;
+  border: 1px solid #2a2a2a;
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.range-btn.active {
+  background: #ffd70022;
+  color: #ffd700;
+  border-color: #ffd70055;
+}
+
+.range-btn:hover {
+  color: #ffd700;
+  border-color: #ffd70044;
+}
+
+
+
 .map-area {
   flex: 1;
-  position: relative;
   min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: row;
 }
 
 .leaflet-map {
+  flex: 1;
+  min-width: 0;
   height: 100%;
-  width: 100%;
-  min-height: 300px;
 }
 
 .overlay {
@@ -103,4 +198,202 @@
   font-size: 0.65rem;
   color: var(--text-secondary);
   flex-shrink: 0;
+}
+
+/* ── Gold Price Chart Panel ── */
+.gold-chart-panel {
+  width: 210px;
+  flex-shrink: 0;
+  background: #0f0f0f;
+  border-left: 1px solid #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 10px 8px;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chart-symbol {
+  color: #ffd700;
+  font-size: 0.78rem;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+}
+
+.chart-range {
+  background: #ffd70022;
+  color: #ffd700;
+  font-size: 0.6rem;
+  padding: 1px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+}
+
+.chart-price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.price-value {
+  color: #f0f0f0;
+  font-size: 1.3rem;
+  font-weight: bold;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.price-change {
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+}
+
+.price-change.up   { color: #44bb44; }
+.price-change.down { color: #ff4444; }
+
+.gold-svg {
+  width: 100%;
+  height: 80px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.chart-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: center;
+}
+
+.stat-lbl {
+  font-size: 0.55rem;
+  color: #555;
+  letter-spacing: 0.1em;
+}
+
+.stat-val {
+  font-size: 0.68rem;
+  color: #bbb;
+}
+
+.chart-dates {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.55rem;
+  color: #444;
+  margin-top: 2px;
+}
+
+.chart-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 4px;
+  border-top: 1px solid #1e1e1e;
+}
+
+.chart-label {
+  font-size: 0.6rem;
+  color: #ffd70088;
+  letter-spacing: 0.1em;
+}
+
+.chart-unit {
+  font-size: 0.55rem;
+  color: #444;
+}
+
+/* ── XAU Currency Pairs ── */
+.pairs-section {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #1e1e1e;
+  padding-top: 6px;
+  margin-top: 2px;
+}
+
+.pairs-title {
+  font-size: 0.57rem;
+  color: #ffd70066;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.pairs-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mini-ticker {
+  display: grid;
+  grid-template-columns: 30px 1fr 38px 44px;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 2px;
+  border-radius: 2px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.mini-ticker:hover {
+  background: #ffffff0a;
+}
+
+.mini-ticker.active {
+  background: #ffd70012;
+  border-color: #ffd70030;
+}
+
+.mt-code {
+  font-size: 0.62rem;
+  color: #777;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+}
+
+.mini-ticker.active .mt-code {
+  color: #ffd700;
+}
+
+.mt-price {
+  font-size: 0.62rem;
+  color: #bbb;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.mt-pct {
+  font-size: 0.58rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.mt-pct.up   { color: #44bb44; }
+.mt-pct.down { color: #ff4444; }
+
+.mt-spark {
+  width: 44px;
+  height: 16px;
+  display: block;
+  opacity: 0.7;
 }

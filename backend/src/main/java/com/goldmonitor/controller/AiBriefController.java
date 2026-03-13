@@ -55,9 +55,9 @@ public class AiBriefController {
 
         // Check cache
         List<Map<String, Object>> rows = jdbc.queryForList(
-                "SELECT content, model_used, generated_at FROM ai_briefs " +
+                "SELECT content, model_used, generated_at::text FROM ai_briefs " +
                 "WHERE brief_type = ? " +
-                "AND datetime(generated_at, '+' || ? || ' hours') > datetime('now') " +
+                "AND generated_at > NOW() - (? || ' hours')::INTERVAL " +
                 "ORDER BY generated_at DESC LIMIT 1",
                 briefType, CACHE_DURATION_HOURS);
 

@@ -78,7 +78,7 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
       if (!map.has(key)) map.set(key, []);
       map.get(key)!.push(item);
     }
-    return Array.from(map.entries()).map(([source, items]) => ({ source, items }));
+    return Array.from(map.entries()).map(([source, items]) => ({ source, items: items.slice(0, 4) }));
   }
 
   timeAgo(ts: string | null): string {

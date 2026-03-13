@@ -1,5 +1,7 @@
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background: var(--bg-primary);
@@ -7,16 +9,17 @@
 
 .dashboard-grid {
   flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: 320px 1fr 340px;
   grid-template-rows: 1fr;
   gap: 8px;
   padding: 8px;
-  height: calc(100vh - 60px);
   overflow: hidden;
 }
 
 .panel-col {
+  min-height: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
